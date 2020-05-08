@@ -24,6 +24,14 @@ namespace NoCorsHeadersOnException
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(opts =>
+            {
+                opts.AddDefaultPolicy(builder =>
+                {
+                    builder.WithOrigins("http://localhost:4200");
+                });
+            });
+
             services.AddControllers();
         }
 
@@ -36,6 +44,8 @@ namespace NoCorsHeadersOnException
             }
 
             app.UseRouting();
+
+            app.UseCors();
 
             app.UseAuthorization();
 
