@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -41,6 +42,21 @@ namespace NoCorsHeadersOnException
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                // Without an exception handler, CORS headers
+                // will not be returned when an exception is thrown.
+                app.UseExceptionHandler(configure =>
+                {
+                    configure.Run(context =>
+                    {
+                        context.Response.Clear();
+                        context.Response.StatusCode = 500;
+
+                        return Task.CompletedTask;
+                    });
+                });
             }
 
             app.UseRouting();
